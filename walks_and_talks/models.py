@@ -1,7 +1,15 @@
 from django.db import models
 
 
-class
+class People(models.Model):
+    name_surname = models.CharField(max_length=255)
+    years_of_life = models.CharField(max_length=50)
+    short_information = models.TextField()
+    more_information = models.TextField()
+    link_photo = models.TextField(null=True)
+    link_biography = models.TextField(null=True)
+
+
 class DemocracyPositiveOpinions(models.Model):
     opinion = models.TextField(unique=True)
     comment = models.TextField()

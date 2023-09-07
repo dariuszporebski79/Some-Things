@@ -1,23 +1,32 @@
 from django.db import models
 
 
+class AllocatingMandatesMethods(models.Model):
+    name = models.CharField(max_length=255, unique=True)
+    short_information = models.TextField()
+    link_more_information = models.TextField(null=True)
+
+
 class People(models.Model):
-    name_surname = models.CharField(max_length=255)
+    name_and_surname = models.CharField(max_length=255)
     years_of_life = models.CharField(max_length=50)
     short_information = models.TextField()
     more_information = models.TextField()
     link_photo = models.TextField(null=True)
     link_biography = models.TextField(null=True)
+    allocating_mandates_method = models.ForeignKey(AllocatingMandatesMethods, null=True)
 
 
 class DemocracyPositiveOpinions(models.Model):
     opinion = models.TextField(unique=True)
     comment = models.TextField()
+    author = models.ForeignKey(People, on_delete=models.CASCADE)
 
 
 class DemocracyNegativeOpinions(models.Model):
     opinion = models.TextField(unique=True)
     comment = models.TextField()
+    author = models.ForeignKey(People, on_delete=models.CASCADE)
 
 
 class ElectoralCommittee(models.Model):
@@ -32,13 +41,12 @@ class Constituencies(models.Model):
     number_of_mandates = models.SmallIntegerField()
     number_of_voters = models.IntegerField()
 
-# class Room(models.Model):
-#     room_name = models.CharField(max_length=255, unique=True)
-#     room_capacity = models.SmallIntegerField()
-#     projector_availability = models.BooleanField()
-#
-#
-# class RoomReservation(models.Model):
-#     room_id = models.ForeignKey(Room, on_delete=models.CASCADE)
-#     date_of_reservation = models.DateField()
-#     comment = models.TextField(default="No comment")
+
+class AllocatingMethodsAdvantages(models.Model):
+    advantage = models.TextField()
+    methods = models.ManyToManyField(AllocatingMandatesMethods)
+
+
+class AllocatingMethodsDisadvantages(models.Model):
+    disadvantage = models.TextField()
+    methods = models.ManyToManyField(AllocatingMandatesMethods)

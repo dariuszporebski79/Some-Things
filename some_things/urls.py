@@ -16,7 +16,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from walks_and_talks.views import (WelcomeSiteView, WalksAndTalksCategoriesView,
+                                   SocietyWalksAndTalksView)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('/', WelcomeSiteView.as_view()),
+    path('walksandtalks/', WalksAndTalksCategoriesView.as_view()),
+    path('society/', SocietyWalksAndTalksView.as_view()),
 ]

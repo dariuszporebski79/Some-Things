@@ -15,3 +15,13 @@ class WalksAndTalksCategoriesView(View):
 class SocietyWalksAndTalksView(View):
     def get(self, request):
         return render(request, "society_walks_and_talks.html")
+
+
+class OpinionsAboutDemocracyView(View):
+    def get(self, request):
+        return render(request, "society_walks_and_talks.html")
+
+
+class DHondtMethodView(View):
+    def get(self, request):
+        return render(request, "dHondt_method.html")

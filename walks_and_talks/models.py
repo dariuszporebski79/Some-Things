@@ -14,7 +14,8 @@ class People(models.Model):
     more_information = models.TextField()
     link_photo = models.TextField(null=True)
     link_biography = models.TextField(null=True)
-    allocating_mandates_method = models.ForeignKey(AllocatingMandatesMethods, null=True)
+    allocating_mandates_method = models.ForeignKey(AllocatingMandatesMethods,
+                                                   on_delete=models.SET_NULL, null=True)
 
 
 class DemocracyPositiveOpinions(models.Model):

@@ -5,6 +5,19 @@
     <title>Adding Electoral Committee</title>
 </head>
 <body>
-Nazwa komitetu wyborczego: Czy komitet wyborczy jest koalicją?
+{{message}}
+    <form action="" method="POST">
+        <label>Nazwa komitetu wyborczego: <input type="text" name="committee_name"></label>
+        <label>
+            Czy komitet wyborczy jest koalicją?
+            <select name="is_coalition">
+                <option value="">Wybierz...</option>
+                <option value="Yes">Komitet wyborczy JEST koalicją</option>
+                <option value="No">komitet wyborczy NIE JEST koalicją</option>
+            </select>
+        </label>
+        <label><input type="submit" value="Zatwierdź"></label>
+        {% csrf_token %}
+    </form>
 </body>
 </html>

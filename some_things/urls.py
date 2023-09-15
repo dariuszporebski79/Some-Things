@@ -27,8 +27,8 @@ urlpatterns = [
     path('walksandtalks/', WalksAndTalksCategoriesView.as_view()),
     path('society/', SocietyWalksAndTalksView.as_view()),
     path('society/aboutdemocracy/', OpinionsAboutDemocracyView.as_view()),
-    path('society/dHondt/', DHondtMethodView.as_view()),
+    path('society/dHondt/', DHondtMethodView.as_view(), name='dHondt'),
     path('society/addcommittee/', AddElectoralCommitteeView.as_view()),
-    path('society/editcommittee/', EditElectoralCommitteeView.as_view()),
-    path('society/deletecommittee/', DeleteElectoralCommitteeView.as_view()),
+    path('society/editcommittee/<int:committee_id>', EditElectoralCommitteeView.as_view()),
+    path('society/deletecommittee/<int:committee_id>', DeleteElectoralCommitteeView.as_view()),
 ]

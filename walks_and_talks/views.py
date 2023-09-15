@@ -1,5 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views import View
+from walks_and_talks.models import ElectoralCommittee
 
 
 class WelcomeSiteView(View):
@@ -24,12 +25,37 @@ class OpinionsAboutDemocracyView(View):
 
 class DHondtMethodView(View):
     def get(self, request):
-        return render(request, 'dHondt_method.html')
+        # message = "Hello!"
+        electoral_committees = ElectoralCommittee.objects.all()
+        return render(request, 'dHondt_method.html', {"ctx": electoral_committees})
+
+    def post(self, request):
+        pass
 
 
 class AddElectoralCommitteeView(View):
     def get(self, request):
         return render(request, 'add_electoral_committee.html')
+
+    def post(self, request):
+        committee_name = request.POST.get("committee_name")
+        is_coalition = request.POST.get("is_coalition")
+        if ((committee_name and not ElectoralCommittee.objects.filter(committee_name=committee_name))
+                and is_coalition):
+            if is_coalition == "Yes":
+                is_coalition = True
+            else:
+                is_coalition = False
+            new_committee = ElectoralCommittee.objects.create(committee_name=committee_name,
+                                                              is_coalition=is_coalition)
+            # message = f"""Great, you have just added a new ...
+            # Name: ..."""
+            return redirect('dHondt')
+            # return render(request, ".html", context={"message": message})
+        else:
+            message = f"Coś poszło nie tak :-( ;-). Spróbuj jeszcze raz :-)"
+            return render(request, 'add_electoral_committee.html',
+                          {"message": message})
 
 
 class EditElectoralCommitteeView(View):

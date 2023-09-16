@@ -25,13 +25,16 @@ class OpinionsAboutDemocracyView(View):
 
 class DHondtMethodView(View):
     def get(self, request):
-        # message = "Hello!"
         electoral_committees = ElectoralCommittee.objects.all()
-        return render(request, 'dHondt_method.html', {"ctx": electoral_committees})
+        support = "Coś tu się powinno kiedyś pojawić"
+        return render(request, 'dHondt_method.html',
+                      {"ctx": [electoral_committees, support]})
 
     def post(self, request):
-        pass
-
+        electoral_committees = ElectoralCommittee.objects.all()
+        support = request.POST.getlist('support')
+        return render(request, 'dHondt_method.html',
+                      {"ctx": [electoral_committees, support]})
 
 class AddElectoralCommitteeView(View):
     def get(self, request):
@@ -48,10 +51,7 @@ class AddElectoralCommitteeView(View):
                 is_coalition = False
             new_committee = ElectoralCommittee.objects.create(committee_name=committee_name,
                                                               is_coalition=is_coalition)
-            # message = f"""Great, you have just added a new ...
-            # Name: ..."""
             return redirect('dHondt')
-            # return render(request, ".html", context={"message": message})
         else:
             message = f"Coś poszło nie tak :-( ;-). Spróbuj jeszcze raz :-)"
             return render(request, 'add_electoral_committee.html',

@@ -5,20 +5,25 @@
     <title>D'Hondt Method</title>
 </head>
 <body>
-{#    <p>{{ctx.0}}</p>#}
     <p>Lista komitetów wyborczych</p>
-    <ul>
-        {% for committee in ctx %}
+    <form action="" method="POST">
+        <ul>
+        {% for committee in ctx.0 %}
             <li>
                 Nazwa komitetu wyborczego: {{committee.committee_name}},
                 Czy komitet jest koalicją (True=tak, False=nie): {{committee.is_coalition}}
+                <label>Poparcie komitetu wyborczego: <input type="text" name="support"></label>
                 <a href="/society/editcommittee/{{committee.id}}">Edytuj dane komitetu</a>
                 <a href="/society/deletecommittee/{{committee.id}}">Usuń komitet</a>
             </li>
         {% empty %}
             <p>Brak komitetów wyborczych do wyświetlenia. Dodaj komitety</p>
         {% endfor %}
-    </ul>
+        </ul>
+        <label><input type="submit" value="Zatwierdź"></label>
+        {% csrf_token %}
+    </form>
     <a href="/society/addcommittee">Dodaj komitet wyborczy</a>
+{{ ctx.1 }}
 </body>
 </html>

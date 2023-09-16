@@ -59,8 +59,34 @@ class AddElectoralCommitteeView(View):
 
 
 class EditElectoralCommitteeView(View):
-    def get(self, request):
-        return render(request, 'edit_elecoral_committee.html')
+    def get(self, request, committee_id):
+        edited_committee = ElectoralCommittee.objects.get(id=committee_id)
+        message = ":-)"
+        return render(request, 'edit_electoral_committee.html',
+                      {"ctx": [message, edited_committee]})
+
+    def post(self, request, committee_id):
+        edited_committee = ElectoralCommittee.objects.get(id=committee_id)
+        committee_name = request.POST.get("committee_name")
+        is_coalition = request.POST.get("is_coalition")
+        if ((committee_name and not ElectoralCommittee.objects.filter(committee_name=committee_name))
+                or is_coalition):
+            if (committee_name
+                    and not ElectoralCommittee.objects.filter(committee_name=committee_name)):
+                edited_committee.committee_name = committee_name
+                edited_committee.save()
+            if is_coalition:
+                if is_coalition == "Yes":
+                    is_coalition = True
+                else:
+                    is_coalition = False
+                edited_committee.is_coalition = is_coalition
+                edited_committee.save()
+            return redirect('dHondt')
+        else:
+            message = f"Coś poszło nie tak :-( ;-). Spróbuj jeszcze raz :-)"
+            return render(request, 'edit_electoral_committee.html',
+                          {"ctx": [message, edited_committee]})
 
 
 class DeleteElectoralCommitteeView(View):

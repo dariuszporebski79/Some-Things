@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Editing Data Of Electoral Committee</title>
+</head>
+<body>
+<p>{{ ctx.0 }}</p>
+<p>Zmiana danych komitetu wyborczego. Wprowadź nowe dane i naciśnij "Zatwierdź".</p>
+    <form action="" method="POST">
+        <label>
+            Nowa nazwa komitetu (obecna nazwa: {{ctx.1.committee_name}}):
+            <input type="text" name="committee_name">
+        </label>
+        <label>
+            Czy komitet jest koalicją? (True=tak, False=nie) Zmiana statusu
+            (obecny status: {{ctx.1.is_coalition}}):
+            <select name="is_coalition">
+                <option value="">Wybierz...</option>
+                <option value="Yes">Komitet wyborczy JEST koalicją</option>
+                <option value="No">komitet wyborczy NIE JEST koalicją</option>
+            </select>
+        </label>
+        <label><input type="submit" value="Zatwierdź"></label>
+        {% csrf_token %}
+    </form>
+</body>
+</html>

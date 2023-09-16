@@ -26,13 +26,19 @@ class OpinionsAboutDemocracyView(View):
 class DHondtMethodView(View):
     def get(self, request):
         electoral_committees = ElectoralCommittee.objects.all()
-        support = "Coś tu się powinno kiedyś pojawić"
+        support = "Coś tu się powinno zaraz pojawić"
         return render(request, 'dHondt_method.html',
                       {"ctx": [electoral_committees, support]})
 
     def post(self, request):
         electoral_committees = ElectoralCommittee.objects.all()
         support = request.POST.getlist('support')
+        # potrzebuję przekazaćc do html:
+        # electoral_committee
+        # committee_support
+        # committee_mandates
+        # słownik? wyniki = {"committee": [support, mandates]}
+        # for i in electoral_committees:
         return render(request, 'dHondt_method.html',
                       {"ctx": [electoral_committees, support]})
 

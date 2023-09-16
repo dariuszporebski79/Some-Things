@@ -31,6 +31,16 @@
         {% csrf_token %}
     </form>
     <a href="/society/addcommittee">Dodaj komitet wyborczy</a> <br />
-{{ ctx.1 }}
+    <ul>
+        {% for committee in ctx.0 %}
+            <li>
+                Nazwa komitetu wyborczego: {{committee.committee_name}} <br />
+                Poparcie komitetu wyborczego: {{ ctx.1 }} % <br />
+                Szacunkowa liczba mandatów w Sejmie zdobytych przez komitet: {{ ctx.1 }}<br />
+            </li>
+        {% empty %}
+            <p>Brak komitetów wyborczych do wyświetlenia. Dodaj komitety</p>
+        {% endfor %}
+    </ul>
 </body>
 </html>

@@ -90,5 +90,7 @@ class EditElectoralCommitteeView(View):
 
 
 class DeleteElectoralCommitteeView(View):
-    def get(self, request):
-        return render(request, 'delete_electoral_committee.html')
+    def get(self, request, committee_id):
+        deleted_committee = ElectoralCommittee.objects.get(id=committee_id)
+        deleted_committee.delete()
+        return redirect('dHondt')

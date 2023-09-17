@@ -1,3 +1,5 @@
 from django.contrib import admin
+from walks_and_talks.models import Constituencies
 
-# Register your models here.
+
+admin.site.register(Constituencies)

@@ -6,8 +6,9 @@
 </head>
 <body>
     <p>Lista komitetów wyborczych. Podaj poparcie dla poszczególnych komitetów (w procentach,
-        z dokładnością do dwóch miejsc po przecinku, suma poparcia dla komitetów nie może
-        być większa niż 100%). Kliknij "Zatwierdź" i zobacz szacunkową liczbę mandatów
+        z dokładnością do dwóch miejsc po przecinku (a w zasadzie po kropce ;-) -
+        w zapisie ułamków stosuj kropkę, nie - przecinek ;-) ), suma poparcia dla komitetów
+        nie może być większa niż 100%). Kliknij "Zatwierdź" i zobacz szacunkową liczbę mandatów
         każdego komitetu w polskim Sejmie :-)</p>
     <form action="" method="POST">
         <ul>
@@ -31,15 +32,16 @@
         {% csrf_token %}
     </form>
     <a href="/society/addcommittee">Dodaj komitet wyborczy</a> <br />
+    <p>Szacunkowe wyniki wyborów:</p>
     <ul>
-        {% for committee in ctx.0 %}
+        {% for committee in ctx.1 %}
             <li>
-                Nazwa komitetu wyborczego: {{committee.committee_name}} <br />
-                Poparcie komitetu wyborczego: {{ ctx.1 }} % <br />
-                Szacunkowa liczba mandatów w Sejmie zdobytych przez komitet: {{ ctx.1 }}<br />
+                Nazwa komitetu wyborczego: {{ committee.0 }} <br />
+                Poparcie komitetu wyborczego: {{ committee.1 }} % <br />
+                Szacunkowa liczba mandatów w Sejmie zdobytych przez komitet: {{ committee.2 }}<br />
             </li>
         {% empty %}
-            <p>Brak komitetów wyborczych do wyświetlenia. Dodaj komitety</p>
+            <p>Już wkrótce :-) ;-)</p>
         {% endfor %}
     </ul>
 </body>

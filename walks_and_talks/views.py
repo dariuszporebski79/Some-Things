@@ -28,19 +28,33 @@ class DHondtMethodView(View):
         electoral_committees = ElectoralCommittee.objects.all()
         support = "Coś tu się powinno zaraz pojawić"
         return render(request, 'dHondt_method.html',
-                      {"ctx": [electoral_committees, support]})
+                      {"ctx": [electoral_committees, '']})
 
     def post(self, request):
         electoral_committees = ElectoralCommittee.objects.all()
         support = request.POST.getlist('support')
-        # potrzebuję przekazaćc do html:
-        # electoral_committee
-        # committee_support
-        # committee_mandates
-        # słownik? wyniki = {"committee": [support, mandates]}
-        # for i in electoral_committees:
+        # results = []
+        # electoral_committee_1 = []
+        # electoral_committee_2 = []
+        # electoral_committee_3 = []
+        committee_names = []
+        for committee in electoral_committees:
+            committee_names.append(committee.committee_name)
+        committee_name_1 = committee_names[0]
+        committee_name_2 = committee_names[1]
+        committee_name_3 = committee_names[2]
+        support_1 = float(support[0])
+        support_2 = float(support[1])
+        support_3 = float(support[2])
+        result_1 = round(support_1 * 460 / 100)
+        result_2 = round(support_2 * 460 / 100)
+        result_3 = round(support_3 * 460 / 100)
+        electoral_committee_1 = [committee_name_1, support_1, result_1]
+        electoral_committee_2 = [committee_name_2, support_2, result_2]
+        electoral_committee_3 = [committee_name_3, support_3, result_3]
+        results = [electoral_committee_1, electoral_committee_2, electoral_committee_3]
         return render(request, 'dHondt_method.html',
-                      {"ctx": [electoral_committees, support]})
+                      {"ctx": [electoral_committees, results]})
 
 class AddElectoralCommitteeView(View):
     def get(self, request):

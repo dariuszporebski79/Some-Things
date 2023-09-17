@@ -42,6 +42,9 @@ class Constituencies(models.Model):
     number_of_mandates = models.SmallIntegerField()
     number_of_voters = models.IntegerField()
 
+    def __str__(self):
+        return self.seat_of_commission
+
 
 class AllocatingMethodsAdvantages(models.Model):
     advantage = models.TextField()

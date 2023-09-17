@@ -26,35 +26,71 @@ class OpinionsAboutDemocracyView(View):
 class DHondtMethodView(View):
     def get(self, request):
         electoral_committees = ElectoralCommittee.objects.all()
-        support = "Coś tu się powinno zaraz pojawić"
         return render(request, 'dHondt_method.html',
                       {"ctx": [electoral_committees, '']})
 
     def post(self, request):
         electoral_committees = ElectoralCommittee.objects.all()
         support = request.POST.getlist('support')
-        # results = []
-        # electoral_committee_1 = []
-        # electoral_committee_2 = []
-        # electoral_committee_3 = []
-        committee_names = []
-        for committee in electoral_committees:
-            committee_names.append(committee.committee_name)
-        committee_name_1 = committee_names[0]
-        committee_name_2 = committee_names[1]
-        committee_name_3 = committee_names[2]
-        support_1 = float(support[0])
-        support_2 = float(support[1])
-        support_3 = float(support[2])
-        result_1 = round(support_1 * 460 / 100)
-        result_2 = round(support_2 * 460 / 100)
-        result_3 = round(support_3 * 460 / 100)
-        electoral_committee_1 = [committee_name_1, support_1, result_1]
-        electoral_committee_2 = [committee_name_2, support_2, result_2]
-        electoral_committee_3 = [committee_name_3, support_3, result_3]
-        results = [electoral_committee_1, electoral_committee_2, electoral_committee_3]
-        return render(request, 'dHondt_method.html',
-                      {"ctx": [electoral_committees, results]})
+        if (('' not in support)
+                and (float(support[0]) + float(support[1]) + float(support[2]) <= 100)):
+            committee_names = []
+            are_coalitions = []
+            # !!!other_committees!!!
+            for committee in electoral_committees:
+                committee_names.append(committee.committee_name)
+                are_coalitions.append(committee.is_coalition)
+            committee_name_1 = committee_names[0]
+            committee_name_2 = committee_names[1]
+            committee_name_3 = committee_names[2]
+            is_coalition_1 = are_coalitions[0]
+            is_coalition_2 = are_coalitions[1]
+            is_coalition_3 = are_coalitions[2]
+            support_1 = float(support[0])
+            support_2 = float(support[1])
+            support_3 = float(support[2])
+            if is_coalition_1 == False:
+                if support_1 < 5:
+                    result_1 = 'Brak mandatów. Komitet nie przekroczył progu 5%'
+                else:
+                    result_1 = round(support_1 * 460 / 100)
+            else:
+                if support_1 < 8:
+                    result_1 = 'Brak mandatów. Komitet nie przekroczył progu 8%'
+                else:
+                    result_1 = round(support_1 * 460 / 100)
+            if is_coalition_2 == False:
+                if support_2 < 5:
+                    result_2 = 'Brak mandatów. Komitet nie przekroczył progu 5%'
+                else:
+                    result_2 = round(support_2 * 460 / 100)
+            else:
+                if support_2 < 8:
+                    result_2 = 'Brak mandatów. Komitet nie przekroczył progu 8%'
+                else:
+                    result_2 = round(support_2 * 460 / 100)
+            if is_coalition_3 == False:
+                if support_3 < 5:
+                    result_3 = 'Brak mandatów. Komitet nie przekroczył progu 5%'
+                else:
+                    result_3 = round(support_3 * 460 / 100)
+            else:
+                if support_3 < 8:
+                    result_3 = 'Brak mandatów. Komitet nie przekroczył progu 8%'
+                else:
+                    result_3 = round(support_3 * 460 / 100)
+            electoral_committee_1 = [committee_name_1, support_1, result_1]
+            electoral_committee_2 = [committee_name_2, support_2, result_2]
+            electoral_committee_3 = [committee_name_3, support_3, result_3]
+            results = [electoral_committee_1, electoral_committee_2, electoral_committee_3]
+            return render(request, 'dHondt_method.html',
+                          {"ctx": [electoral_committees, results]})
+        else:
+            message = (f'''Coś poszło nie tak :-( ;-). Prawdopodobnie któreś pole zostało puste
+                       albo suma poparcia dla komitetów wyborczych przekroczyła 100.
+                       Spróbuj jeszcze raz :-)''')
+            return render(request, 'dHondt_method.html',
+                          {"ctx": [electoral_committees, "", message]})
 
 class AddElectoralCommitteeView(View):
     def get(self, request):

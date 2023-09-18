@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.views import View
-from walks_and_talks.models import ElectoralCommittee
+from walks_and_talks.models import (ElectoralCommittee, AllocatingMethodsAdvantages,
+                                    AllocatingMethodsDisadvantages)
 
 
 class WelcomeSiteView(View):
@@ -193,3 +194,30 @@ class DeleteElectoralCommitteeView(View):
         deleted_committee = ElectoralCommittee.objects.get(id=committee_id)
         deleted_committee.delete()
         return redirect('dHondt')
+
+
+class MethodsAdvantagesAndDisadvantagesView(View):
+    def get(self, request):
+        return render(request, 'methods_advantages_and_disadvantages.html')
+
+    def post(self, request):
+        feature_of_method = request.POST.get('feature_of_method')
+        advantage_or_disadvantage = request.POST.get('advantage_or_disadvantage')
+        methods = request.POST.getlist('methods')
+        if feature_of_method and advantage_or_disadvantage and methods:
+            # if is_coalition == "Yes":
+            #     is_coalition = True
+            # else:
+            #     is_coalition = False
+            # new_feature = AllocatingMethodsAdvantages.objects.create(advantage=feature_of_method,
+            #                                                          methods='')
+            # new_feature = AllocatingMethodsDisadvantages.objects.create(disadvantage=feature_of_method,
+            #                                                             methods='')
+            # return redirect('dHondt')
+            return render(request, 'methods_advantages_and_disadvantages.html',
+                  {'message': [feature_of_method, advantage_or_disadvantage, methods]})
+        else:
+            message = f'''Coś poszło nie tak :-( ;-). Być może nie zostały 
+            wypełnione/wybrane wszystkie pola. Spróbuj jeszcze raz :-)'''
+            return render(request, 'methods_advantages_and_disadvantages.html',
+                          {"message": message})

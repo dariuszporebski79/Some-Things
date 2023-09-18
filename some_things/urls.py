@@ -19,7 +19,8 @@ from django.urls import path
 from walks_and_talks.views import (WelcomeSiteView, WalksAndTalksCategoriesView,
                                    SocietyWalksAndTalksView, OpinionsAboutDemocracyView,
                                    DHondtMethodView, AddElectoralCommitteeView,
-                                   EditElectoralCommitteeView, DeleteElectoralCommitteeView)
+                                   EditElectoralCommitteeView, DeleteElectoralCommitteeView,
+                                   MethodsAdvantagesAndDisadvantagesView)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -33,4 +34,6 @@ urlpatterns = [
          name='edit-committee'),
     path('society/deletecommittee/<int:committee_id>', DeleteElectoralCommitteeView.as_view(),
          name='delete-committee'),
+    path('society/aboutmethods/', MethodsAdvantagesAndDisadvantagesView.as_view(),
+         name='about-methods'),
 ]

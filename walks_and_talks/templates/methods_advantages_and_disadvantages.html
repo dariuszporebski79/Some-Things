@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Methods Advantages And Disadvantages</title>
+</head>
+<body>
+{{message}}
+    <p>Podaj cechę metody podziału mandatów. Wskaż, czy to jest jej plus czy minus.
+        Zaznacz, której metody lub metod cecha dotyczy (można zaznaczyć więcej
+        niż jedną metodę)</p>
+    <form action="" method="POST">
+        <label>
+            Cecha metody podziału mandatów:
+            <textarea name='feature_of_method'></textarea>
+        </label> <br />
+        <label>
+            Czy ta cecha jest plusem czy minusem metody?
+            <select name='advantage_or_disadvantage'>
+                <option value=''>Wybierz...</option>
+                <option value='advantage'>Cecha jest PLUSEM metody</option>
+                <option value='disadvantage'>Cecha jest MINUSEM metody</option>
+            </select>
+        </label> <br />
+        <fieldset>
+            <legend>
+                Jaką metodę/jakie metody opisuje cecha? (można wskazać więcej niż jedną metodę)
+            </legend>
+            <label>
+                metoda d'Hondta
+                <input type='checkbox' name='methods' value="dHondt" />
+            </label><br />
+            <label>
+                Metoda Sainte-Laguë
+                <input type='checkbox' name='methods' value="SainteLaguë" />
+            </label><br />
+        </fieldset>
+        <label><input type="submit" value="Zatwierdź"></label>
+        {% csrf_token %}
+    </form>
+</body>
+</html>

@@ -215,7 +215,7 @@ class MethodsAdvantagesAndDisadvantagesView(View):
             #                                                             methods='')
             # return redirect('dHondt')
             return render(request, 'methods_advantages_and_disadvantages.html',
-                  {'message': [feature_of_method, advantage_or_disadvantage, methods]})
+                          {'message': [feature_of_method, advantage_or_disadvantage, methods]})
         else:
             message = f'''Coś poszło nie tak :-( ;-). Być może nie zostały 
             wypełnione/wybrane wszystkie pola. Spróbuj jeszcze raz :-)'''

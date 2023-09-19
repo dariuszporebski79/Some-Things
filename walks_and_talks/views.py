@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.views import View
 from walks_and_talks.models import (ElectoralCommittee, AllocatingMethodsAdvantages,
-                                    AllocatingMethodsDisadvantages)
+                                    AllocatingMethodsDisadvantages, AllocatingMandatesMethods)
 
 
 class WelcomeSiteView(View):
@@ -205,14 +205,34 @@ class MethodsAdvantagesAndDisadvantagesView(View):
         advantage_or_disadvantage = request.POST.get('advantage_or_disadvantage')
         methods = request.POST.getlist('methods')
         if feature_of_method and advantage_or_disadvantage and methods:
-            # if is_coalition == "Yes":
-            #     is_coalition = True
-            # else:
-            #     is_coalition = False
-            # new_feature = AllocatingMethodsAdvantages.objects.create(advantage=feature_of_method,
-            #                                                          methods='')
-            # new_feature = AllocatingMethodsDisadvantages.objects.create(disadvantage=feature_of_method,
-            #                                                             methods='')
+            if advantage_or_disadvantage == 'advantage':
+                new_advantage = AllocatingMethodsAdvantages.objects.create(
+                    advantage=feature_of_method)
+                if len(methods) == 1:
+                    if methods[0] == 'dHondt':
+                        method = AllocatingMandatesMethods.objects.get(name="metoda d'Hondta")
+                        new_advantage.methods.add(method)
+                    else:
+                        method = AllocatingMandatesMethods.objects.get(name="metoda Sainte-Laguë")
+                        new_advantage.methods.add(method)
+                else:
+                    method_1 = AllocatingMandatesMethods.objects.get(name="metoda d'Hondta")
+                    method_2 = AllocatingMandatesMethods.objects.get(name="metoda Sainte-Laguë")
+                    new_advantage.methods.set([method_1, method_2])
+            else:
+                new_disadvantage = AllocatingMethodsDisadvantages.objects.create(
+                    disadvantage=feature_of_method)
+                if len(methods) == 1:
+                    if methods[0] == 'dHondt':
+                        method = AllocatingMandatesMethods.objects.get(name="metoda d'Hondta")
+                        new_disadvantage.methods.add(method)
+                    else:
+                        method = AllocatingMandatesMethods.objects.get(name="metoda Sainte-Laguë")
+                        new_disadvantage.methods.add(method)
+                else:
+                    method_1 = AllocatingMandatesMethods.objects.get(name="metoda d'Hondta")
+                    method_2 = AllocatingMandatesMethods.objects.get(name="metoda Sainte-Laguë")
+                    new_disadvantage.methods.set([method_1, method_2])
             # return redirect('dHondt')
             return render(request, 'methods_advantages_and_disadvantages.html',
                           {'message': [feature_of_method, advantage_or_disadvantage, methods]})

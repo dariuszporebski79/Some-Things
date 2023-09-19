@@ -5,7 +5,7 @@
     <title>D'Hondt Method</title>
 </head>
 <body>
-    {{ ctx.4 }}
+    {{ ctx.5 }}
     <p>Lista komitetów wyborczych. Podaj poparcie dla poszczególnych komitetów (w procentach,
         z dokładnością do dwóch miejsc po przecinku (a w zasadzie po kropce ;-) -
         w zapisie ułamków stosuj kropkę, nie - przecinek ;-) ), suma poparcia dla komitetów
@@ -35,7 +35,7 @@
     <a href="/society/addcommittee">Dodaj komitet wyborczy</a> <br />
     <p>Szacunkowe wyniki wyborów:</p>
     <ul>
-        {% for committee in ctx.3 %}
+        {% for committee in ctx.4 %}
             <li>
                 Nazwa komitetu wyborczego: {{ committee.0 }} <br />
                 Poparcie komitetu wyborczego: {{ committee.1 }} % <br />
@@ -45,6 +45,10 @@
             <p>Już wkrótce :-) ;-)</p>
         {% endfor %}
     </ul>
+    <p>{{ ctx.3.name }}</p>
+    <p>{{ ctx.3.short_information }}</p>
+    <p>Po więcej informacji o metodzie zapraszam na Wikipedię :-)
+        <a href='{{ ctx.3.link_more_information}}'>Klik :-)</a></p>
     <p>Plusy i minusy metody d'Hondta</p>
     <p>Plusy metody:</p>
         <ul>

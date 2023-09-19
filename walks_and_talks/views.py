@@ -33,7 +33,7 @@ class DHondtMethodView(View):
         dHondt_disadvantages = method.allocatingmethodsdisadvantages_set.all()
         return render(request, 'dHondt_method.html',
                       {"ctx": [electoral_committees, dHondt_advantages,
-                               dHondt_disadvantages, '']})
+                               dHondt_disadvantages, method, '']})
 
     def post(self, request):
         electoral_committees = ElectoralCommittee.objects.all()
@@ -74,14 +74,14 @@ class DHondtMethodView(View):
                 results.append(electoral_committee)
             return render(request, 'dHondt_method.html',
                           {"ctx": [electoral_committees, dHondt_advantages,
-                                   dHondt_disadvantages, results]})
+                                   dHondt_disadvantages, method, results]})
         else:
             message = (f'''Coś poszło nie tak :-( ;-). Prawdopodobnie któreś pole zostało puste
                        albo suma poparcia dla komitetów wyborczych przekroczyła 100.
                        Spróbuj jeszcze raz :-)''')
             return render(request, 'dHondt_method.html',
                           {"ctx": [electoral_committees, dHondt_advantages,
-                                   dHondt_disadvantages, "", message]})
+                                   dHondt_disadvantages, method, "", message]})
     # (18.09) =>
     # def post(self, request):
     #     electoral_committees = ElectoralCommittee.objects.all()

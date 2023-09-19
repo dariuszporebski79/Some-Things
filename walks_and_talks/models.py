@@ -6,6 +6,9 @@ class AllocatingMandatesMethods(models.Model):
     short_information = models.TextField()
     link_more_information = models.TextField(null=True)
 
+    def __str__(self):
+        return self.name
+
 
 class People(models.Model):
     name_and_surname = models.CharField(max_length=255)

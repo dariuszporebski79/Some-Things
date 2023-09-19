@@ -5,7 +5,7 @@
     <title>D'Hondt Method</title>
 </head>
 <body>
-    {{ ctx.2 }}
+    {{ ctx.4 }}
     <p>Lista komitetów wyborczych. Podaj poparcie dla poszczególnych komitetów (w procentach,
         z dokładnością do dwóch miejsc po przecinku (a w zasadzie po kropce ;-) -
         w zapisie ułamków stosuj kropkę, nie - przecinek ;-) ), suma poparcia dla komitetów
@@ -35,7 +35,7 @@
     <a href="/society/addcommittee">Dodaj komitet wyborczy</a> <br />
     <p>Szacunkowe wyniki wyborów:</p>
     <ul>
-        {% for committee in ctx.1 %}
+        {% for committee in ctx.3 %}
             <li>
                 Nazwa komitetu wyborczego: {{ committee.0 }} <br />
                 Poparcie komitetu wyborczego: {{ committee.1 }} % <br />
@@ -47,7 +47,25 @@
     </ul>
     <p>Plusy i minusy metody d'Hondta</p>
     <p>Plusy metody:</p>
+        <ul>
+        {% for advantage in ctx.1 %}
+            <li>
+                {{ advantage.advantage }}
+            </li>
+        {% empty %}
+            <p>Brak plusów metody do wyświetlenia. Dodaj cechę metody (plus metody)</p>
+        {% endfor %}
+        </ul>
     <p>Minusy metody:</p>
+    <ul>
+        {% for disadvantage in ctx.2 %}
+            <li>
+                {{ disadvantage.disadvantage}}
+            </li>
+        {% empty %}
+            <p>Brak minusów metody do wyświetlenia. Dodaj cechę metody (minus metody)</p>
+        {% endfor %}
+    </ul>
     <a href="/society/aboutmethods/">Dodaj cechę (plus albo minus) metody</a>
 </body>
 </html>

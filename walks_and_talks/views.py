@@ -27,15 +27,25 @@ class OpinionsAboutDemocracyView(View):
 class DHondtMethodView(View):
     def get(self, request):
         electoral_committees = ElectoralCommittee.objects.all()
+        # dHondt_people = ''
+        method = AllocatingMandatesMethods.objects.get(name="metoda d'Hondta")
+        dHondt_advantages = method.allocatingmethodsadvantages_set.all()
+        dHondt_disadvantages = method.allocatingmethodsdisadvantages_set.all()
         return render(request, 'dHondt_method.html',
-                      {"ctx": [electoral_committees, '']})
+                      {"ctx": [electoral_committees, dHondt_advantages,
+                               dHondt_disadvantages, '']})
 
     def post(self, request):
         electoral_committees = ElectoralCommittee.objects.all()
+        # dHondt_people = ''
+        method = AllocatingMandatesMethods.objects.get(name="metoda d'Hondta")
+        dHondt_advantages = method.allocatingmethodsadvantages_set.all()
+        dHondt_disadvantages = method.allocatingmethodsdisadvantages_set.all()
         support = request.POST.getlist('support')
         sum_of_support = 0
-        for s in support:
-            sum_of_support += float(s)
+        if '' not in support:
+            for s in support:
+                sum_of_support += float(s)
         if ('' not in support) and (sum_of_support <= 100):
             committee_names = []
             are_coalitions = []
@@ -63,13 +73,15 @@ class DHondtMethodView(View):
                 index += 1
                 results.append(electoral_committee)
             return render(request, 'dHondt_method.html',
-                          {"ctx": [electoral_committees, results]})
+                          {"ctx": [electoral_committees, dHondt_advantages,
+                                   dHondt_disadvantages, results]})
         else:
             message = (f'''Coś poszło nie tak :-( ;-). Prawdopodobnie któreś pole zostało puste
                        albo suma poparcia dla komitetów wyborczych przekroczyła 100.
                        Spróbuj jeszcze raz :-)''')
             return render(request, 'dHondt_method.html',
-                          {"ctx": [electoral_committees, "", message]})
+                          {"ctx": [electoral_committees, dHondt_advantages,
+                                   dHondt_disadvantages, "", message]})
     # (18.09) =>
     # def post(self, request):
     #     electoral_committees = ElectoralCommittee.objects.all()
@@ -233,9 +245,7 @@ class MethodsAdvantagesAndDisadvantagesView(View):
                     method_1 = AllocatingMandatesMethods.objects.get(name="metoda d'Hondta")
                     method_2 = AllocatingMandatesMethods.objects.get(name="metoda Sainte-Laguë")
                     new_disadvantage.methods.set([method_1, method_2])
-            # return redirect('dHondt')
-            return render(request, 'methods_advantages_and_disadvantages.html',
-                          {'message': [feature_of_method, advantage_or_disadvantage, methods]})
+            return redirect('dHondt')
         else:
             message = f'''Coś poszło nie tak :-( ;-). Być może nie zostały 
             wypełnione/wybrane wszystkie pola. Spróbuj jeszcze raz :-)'''

@@ -20,6 +20,9 @@ class People(models.Model):
     allocating_mandates_method = models.ForeignKey(AllocatingMandatesMethods,
                                                    on_delete=models.SET_NULL, null=True)
 
+    def __str__(self):
+        return self.name_and_surname
+
 
 class DemocracyPositiveOpinions(models.Model):
     opinion = models.TextField(unique=True)

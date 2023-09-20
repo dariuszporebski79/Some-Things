@@ -27,13 +27,13 @@ class OpinionsAboutDemocracyView(View):
 class DHondtMethodView(View):
     def get(self, request):
         electoral_committees = ElectoralCommittee.objects.all()
-        # dHondt_people = ''
         method = AllocatingMandatesMethods.objects.get(name="metoda d'Hondta")
         dHondt_advantages = method.allocatingmethodsadvantages_set.all()
         dHondt_disadvantages = method.allocatingmethodsdisadvantages_set.all()
+        dHondt_creators = method.people_set.all()
         return render(request, 'dHondt_method.html',
                       {"ctx": [electoral_committees, dHondt_advantages,
-                               dHondt_disadvantages, method, '']})
+                               dHondt_disadvantages, method, dHondt_creators, '']})
 
     def post(self, request):
         electoral_committees = ElectoralCommittee.objects.all()
@@ -41,6 +41,7 @@ class DHondtMethodView(View):
         method = AllocatingMandatesMethods.objects.get(name="metoda d'Hondta")
         dHondt_advantages = method.allocatingmethodsadvantages_set.all()
         dHondt_disadvantages = method.allocatingmethodsdisadvantages_set.all()
+        dHondt_creators = method.people_set.all()
         support = request.POST.getlist('support')
         sum_of_support = 0
         if '' not in support:
@@ -49,7 +50,6 @@ class DHondtMethodView(View):
         if ('' not in support) and (sum_of_support <= 100):
             committee_names = []
             are_coalitions = []
-            # !!!other_committees!!!
             for committee in electoral_committees:
                 committee_names.append(committee.committee_name)
                 are_coalitions.append(committee.is_coalition)
@@ -74,14 +74,14 @@ class DHondtMethodView(View):
                 results.append(electoral_committee)
             return render(request, 'dHondt_method.html',
                           {"ctx": [electoral_committees, dHondt_advantages,
-                                   dHondt_disadvantages, method, results]})
+                                   dHondt_disadvantages, method, dHondt_creators, results]})
         else:
             message = (f'''Coś poszło nie tak :-( ;-). Prawdopodobnie któreś pole zostało puste
                        albo suma poparcia dla komitetów wyborczych przekroczyła 100.
                        Spróbuj jeszcze raz :-)''')
             return render(request, 'dHondt_method.html',
                           {"ctx": [electoral_committees, dHondt_advantages,
-                                   dHondt_disadvantages, method, "", message]})
+                                   dHondt_disadvantages, method, dHondt_creators, "", message]})
     # (18.09) =>
     # def post(self, request):
     #     electoral_committees = ElectoralCommittee.objects.all()

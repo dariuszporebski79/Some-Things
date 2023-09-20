@@ -5,7 +5,7 @@
     <title>D'Hondt Method</title>
 </head>
 <body>
-    {{ ctx.5 }}
+    {{ ctx.6 }}
     <p>Lista komitetów wyborczych. Podaj poparcie dla poszczególnych komitetów (w procentach,
         z dokładnością do dwóch miejsc po przecinku (a w zasadzie po kropce ;-) -
         w zapisie ułamków stosuj kropkę, nie - przecinek ;-) ), suma poparcia dla komitetów
@@ -35,7 +35,7 @@
     <a href="/society/addcommittee">Dodaj komitet wyborczy</a> <br />
     <p>Szacunkowe wyniki wyborów:</p>
     <ul>
-        {% for committee in ctx.4 %}
+        {% for committee in ctx.5 %}
             <li>
                 Nazwa komitetu wyborczego: {{ committee.0 }} <br />
                 Poparcie komitetu wyborczego: {{ committee.1 }} % <br />
@@ -71,5 +71,23 @@
         {% endfor %}
     </ul>
     <a href="/society/aboutmethods/">Dodaj cechę (plus albo minus) metody</a>
+    <p>Metodę, którą najczęściej określamy jako "metodę d'Hondta", w istocie opisały
+        niezależnie od siebie dwie osoby:</p>
+    <ul>
+        {% for creator in ctx.4 %}
+            <li>
+                <img src="{{ creator.link_photo }}"
+                     alt="{{ creator.name_and_surname }} - zdjęcie/obraz"
+                     height="238" width="180"/> <br />
+                <p>{{ creator.name_and_surname}}, lata życia: {{ creator.years_of_life }}</p>
+                <p>{{ creator.short_information }}</p>
+                <p>{{ creator.more_information }}</p>
+                <p>Po więcej informacji o twórcy metody zapraszam na Wikipedię :-)
+                    <a href='{{ creator.link_biography}}'>Klik :-)</a></p>
+            </li>
+        {% empty %}
+            <p>Brak informacji o twórcach metody do wyświetlenia :-( Zapraszam wkrótce :-)</p>
+        {% endfor %}
+    </ul>
 </body>
 </html>

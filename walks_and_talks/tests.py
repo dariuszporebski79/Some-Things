@@ -89,6 +89,10 @@ def test_allocating_methods_disadvantages_model(method_disadvantage):
 
 
 # test 3
+@pytest.mark.django_db
+def test_methods_advantages_and_disadvantages_view_1(client):
+    response = client.get('/society/aboutmethods/')
+    assert response.status_code == 200
 
 # TESTY WIDOKI
 # ad D
@@ -111,14 +115,29 @@ def test_add_electoral_committee_view(client):
 # test 1 - zobacz A, test 3 - test_delete_electoral_committee
 # test 2
 
-# ad H
-# test 1 - zobacz C, test 1 - test_allocating_methods_advantages_model
-# test 2 - zobacz C, test 2 - test_allocating_methods_disadvantages_model
+# ad H test 1, test 2 - widok przeestowany w częci C
 # dodatkowy test:
 @pytest.mark.django_db
-def test_methods_advantages_and_disadvantages_view(client):
-    response = client.get('/society/aboutmethods/')
+def test_methods_advantages_and_disadvantages_view_2(client, method):
+    feature_of_method = 'It is ok'
+    advantage_or_disadvantage = 'advantage'
+    methods = 'dHondt'  # przekazane wszystkie potrzebne dane
+    response = client.post('/society/aboutmethods/', {'feature_of_method': feature_of_method,
+                                                      'advantage_or_disadvantage':
+                                                          advantage_or_disadvantage,
+                                                      'methods': methods})
+    assert response.status_code == 302
+
+
+@pytest.mark.django_db
+def test_methods_advantages_and_disadvantages_view_3(client, method):
+    feature_of_method = 'It is ok'
+    advantage_or_disadvantage = 'advantage'  # użytkownik nie podał wszystkich potrzebnych danych
+    response = client.post('/society/aboutmethods/', {'feature_of_method': feature_of_method,
+                                                      'advantage_or_disadvantage':
+                                                          advantage_or_disadvantage})
     assert response.status_code == 200
+
 
 # materiały:
 # def test_details(client):

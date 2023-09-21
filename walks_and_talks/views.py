@@ -37,7 +37,6 @@ class DHondtMethodView(View):
 
     def post(self, request):
         electoral_committees = ElectoralCommittee.objects.all()
-        # dHondt_people = ''
         method = AllocatingMandatesMethods.objects.get(name="metoda d'Hondta")
         dHondt_advantages = method.allocatingmethodsadvantages_set.all()
         dHondt_disadvantages = method.allocatingmethodsdisadvantages_set.all()

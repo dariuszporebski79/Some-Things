@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect
 from django.views import View
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, AccessMixin
+from django.contrib.auth import logout
 from walks_and_talks.models import (ElectoralCommittee, AllocatingMethodsAdvantages,
                                     AllocatingMethodsDisadvantages, AllocatingMandatesMethods)
 
@@ -143,7 +145,16 @@ class DeleteElectoralCommitteeView(View):
         return redirect('dHondt')
 
 
-class MethodsAdvantagesAndDisadvantagesView(View):
+class MethodsAdvantagesAndDisadvantagesView(LoginRequiredMixin, PermissionRequiredMixin, View):
+    permission_required = ('walks_and_talks.view_allocatingmandatesmethods',
+                           'walks_and_talks.add_allocatingmethodsadvantages',
+                           'walks_and_talks.change_allocatingmethodsadvantages',
+                           'walks_and_talks.add_allocatingmethodsdisadvantages',
+                           'walks_and_talks.change_allocatingmethodsdisadvantages')
+    # permission_denied_message = '''Przykro mi, ale nie masz wystarczających uprawnień,
+    # żeby wyświetlić tę stronę :-( ;-) Proszę, skontaktuj się z jej administratorem,
+    # aby naprawić tę sytuację :-)'''
+
     def get(self, request):
         return render(request, 'methods_advantages_and_disadvantages.html')
 
@@ -180,6 +191,7 @@ class MethodsAdvantagesAndDisadvantagesView(View):
                     method_1 = AllocatingMandatesMethods.objects.get(name="metoda d'Hondta")
                     method_2 = AllocatingMandatesMethods.objects.get(name="metoda Sainte-Laguë")
                     new_disadvantage.methods.set([method_1, method_2])
+            logout(request)
             return redirect('dHondt')
         else:
             message = f'''Coś poszło nie tak :-( ;-). Być może nie zostały 

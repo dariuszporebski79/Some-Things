@@ -15,7 +15,8 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import include, path
+from django.contrib.auth import views as auth_views
 from walks_and_talks.views import (WelcomeSiteView, WalksAndTalksCategoriesView,
                                    SocietyWalksAndTalksView, OpinionsAboutDemocracyView,
                                    DHondtMethodView, AddElectoralCommitteeView,
@@ -36,4 +37,5 @@ urlpatterns = [
          name='delete-committee'),
     path('society/aboutmethods/', MethodsAdvantagesAndDisadvantagesView.as_view(),
          name='about-methods'),
+    path('accounts/', include('django.contrib.auth.urls')),
 ]

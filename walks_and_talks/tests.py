@@ -1,12 +1,15 @@
 from django.test import TestCase
 import pytest
-from walks_and_talks.models import (ElectoralCommittee, AllocatingMethodsAdvantages,
-                                    AllocatingMethodsDisadvantages)
+from walks_and_talks.models import ElectoralCommittee
 
 
-# testowane główne funkcjonalności aplikacji:
+# wymogi:
+# 3 testy do głównych funkcjonalności
+# 2 testy do widoku
+
+# testowane główne funkcjonalności:
 # A. Dodawanie komitetu wyborczego, edycja jego danych i usuwanie go
-# B. przypisywanie poparcia w procentach komitetowi wyborczemu, w celu
+# B. Przypisywanie poparcia w procentach komitetowi wyborczemu, w celu
 # uzyskania informacji, czy komitet zdobył jakieś mandaty w wyborach
 # do polskiego Sejmu, a jeśli tak, to ile mandatów zdobył
 # C. dodawanie przez zalogowanego użytkownika plusów albo minusów
@@ -20,30 +23,37 @@ from walks_and_talks.models import (ElectoralCommittee, AllocatingMethodsAdvanta
 # H. MethodsAdvantagesAndDisadvantagesView
 
 # TESTY - FUNKCJONALNOŚCI
-# ad A
+# ad A Dodawanie komitetu wyborczego, edycja jego danych i usuwanie go
 # test 1
 @pytest.mark.django_db
-def test_add_electoral_committee(add_electoral_committee):
-    assert len(ElectoralCommittee.objects.all()) == 1
-    assert (ElectoralCommittee.objects.get(committee_name='We Are The Best')
-            == add_electoral_committee)
+def test_add_electoral_committee_view_1(client):
+    response = client.get('/society/addcommittee/')
+    assert response.status_code == 200
 
 
 # test 2
 @pytest.mark.django_db
-def test_edit_electoral_committee(edit_electoral_committee):
-    assert len(ElectoralCommittee.objects.all()) == 1
-    assert (ElectoralCommittee.objects.get(committee_name='We Will Win')
-            == edit_electoral_committee)
+def test_add_electoral_committee_view_2(client):
+    committee_name = '3 x ok'
+    is_coalition = 'Yes'  # użytkownik podał w formularzu prawidłowe dane
+    # nazwa komitetu się nie powtarza - przekierowanie na /society/dHondt/
+    response = client.post('/society/addcommittee/', {'committee_name': committee_name,
+                                                      'is_coalition': is_coalition})
+    assert response.status_code == 302
 
 
 # test 3
 @pytest.mark.django_db
-def test_delete_electoral_committee(delete_electoral_committee):
-    assert len(ElectoralCommittee.objects.filter(committee_name='We Are The Best')) == 0
+def test_add_electoral_committee_view_3(client, add_electoral_committee):
+    committee_name = 'We Are The Best'
+    is_coalition = "Yes"  # użytkownik podał w formularzu wymagane dane
+    # ale nazwa komitetu się nie powtarza
+    response = client.post('/society/addcommittee/', {'committee_name': committee_name,
+                                                      'is_coalition': is_coalition})
+    assert response.status_code == 200
 
 
-# ad B
+# ad B Przypisywanie poparcia w procentach komitetowi wyborczemu...
 # test 1
 @pytest.mark.django_db
 def test_dHondt_method_view(client, dHondt_electoral_committees, method):
@@ -65,63 +75,29 @@ def test_dHondt_method_view_calculations(support_1, support_2, result_1, result_
                                          client, dHondt_electoral_committees, method):
     support = [support_1, support_2]
     response = client.post('/society/dHondt/', {'electoral_committees': dHondt_electoral_committees,
-                                               'method': method, 'support': support})
+                                                'method': method, 'support': support})
     assert response.status_code == 200
     assert response.context['ctx'][5][0][2] == result_1
     assert response.context['ctx'][5][1][2] == result_2
 
 
-# ad C
+# ad C dodawanie przez zalogowanego użytkownika plusów albo minusów metody D'Hondta...
 # test 1
 @pytest.mark.django_db
-def test_allocating_methods_advantages_model(method_advantage):
-    assert len(AllocatingMethodsAdvantages.objects.all()) == 1
-    assert (AllocatingMethodsAdvantages.objects.get(advantage='It is ok')
-            == method_advantage)
-
-
-# test 2
-@pytest.mark.django_db
-def test_allocating_methods_disadvantages_model(method_disadvantage):
-    assert len(AllocatingMethodsDisadvantages.objects.all()) == 1
-    assert (AllocatingMethodsDisadvantages.objects.get(disadvantage='It is bad')
-            == method_disadvantage)
-
-
-# test 3
-@pytest.mark.django_db
 def test_methods_advantages_and_disadvantages_view_1(client):
-    response = client.get('/society/aboutmethods/')
-    assert response.status_code == 200
+    response = client.get('/society/aboutmethods/')  # klient niezalogowany,
+    # przekierowanie do widoku logowania
+    assert response.status_code == 302
 
-# TESTY WIDOKI
-# ad D
-# test 1, test 2 - widok przetestowany w części B
 
-# ad E
-# test 1 - zobacz A, test 1 - test_add_electoral_committee
 # test 2
 @pytest.mark.django_db
-def test_add_electoral_committee_view(client):
-    response = client.get('/society/addcommittee/')
-    assert response.status_code == 200
-
-
-# ad F
-# test 1 - zobacz A, test 2 - test_edit_electoral_committee
-# test 2
-
-# ad G
-# test 1 - zobacz A, test 3 - test_delete_electoral_committee
-# test 2
-
-# ad H test 1, test 2 - widok przeestowany w częci C
-# dodatkowy test:
-@pytest.mark.django_db
-def test_methods_advantages_and_disadvantages_view_2(client, method):
+def test_methods_advantages_and_disadvantages_view_2(client, user, method):
+    client.login(username='nohtyp', password='nohtyp777')
     feature_of_method = 'It is ok'
     advantage_or_disadvantage = 'advantage'
-    methods = 'dHondt'  # przekazane wszystkie potrzebne dane
+    methods = ['dHondt']  # użytkownik zalogowany, przekazane wszystkie potrzebne dane
+    # przekierowanie na /society/dHondt
     response = client.post('/society/aboutmethods/', {'feature_of_method': feature_of_method,
                                                       'advantage_or_disadvantage':
                                                           advantage_or_disadvantage,
@@ -129,44 +105,62 @@ def test_methods_advantages_and_disadvantages_view_2(client, method):
     assert response.status_code == 302
 
 
+# test 3
 @pytest.mark.django_db
-def test_methods_advantages_and_disadvantages_view_3(client, method):
+def test_methods_advantages_and_disadvantages_view_3(client, user):
+    client.login(username='nohtyp', password='nohtyp777')
     feature_of_method = 'It is ok'
-    advantage_or_disadvantage = 'advantage'  # użytkownik nie podał wszystkich potrzebnych danych
+    advantage_or_disadvantage = 'advantage'  # użytkownik zalogowany, ale nie podał
+    # wszystkich potrzebnych danych - wraca do formularza
     response = client.post('/society/aboutmethods/', {'feature_of_method': feature_of_method,
                                                       'advantage_or_disadvantage':
                                                           advantage_or_disadvantage})
     assert response.status_code == 200
 
+# TESTY WIDOKI
+# ad D DHondtMethodView
+# test 1, test 2 - widok przetestowany w części B
 
-# materiały:
-# def test_details(client):
-#     response = client.get('sith/list/')  # Pobieramy stronę metodą GET.
-#     assert response.status_code == 200  # Czy odpowiedź HTTP to 200 OK.
-#     # Czy widok zwrócił w kontekście DOKŁADNIE 2 Sithów?
-#     assert len(response.context['sith']) == 2
-# @pytest.mark.django_db
-# def test_client_list_products(client, add_product):
-#     response = client.get("/")
-#     assert response.status_code == 200
-#     assert add_product in response.context.get('products')
-# Zadanie 3
-# @pytest.mark.django_db
-# def test_client_add_product():
-#     client = Client()
-#     new_product = {
-#         "name": "Krzesło",
-#         "description": "wygodne",
-#         "price": 850,
-#     }
-#     response = client.post("/product/add/", new_product)
-#     assert response.status_code == 302
-#     assert Product.objects.filter(name=new_product["name"]).exists()
-# Zadanie 4
-# @pytest.mark.django_db
-# def test_list_products(add_some_products):
-#     client = Client()
-#     response = client.get("/")
-#     assert response.status_code == 200
-#     for i in range(3):
-#         assert add_some_products[i] == response.context.get('products')[i]
+# ad E AddElectoralCommitteeView
+# test 1, test 2 - widok przetestowany w części A
+
+
+# ad F EditElectoralCommitteeView
+# test 1
+@pytest.mark.django_db
+def test_edit_electoral_committee_view_1(client, add_electoral_committee):
+    committee_id = add_electoral_committee.id
+    response = client.get(f'/society/editcommittee/{committee_id}/')
+    assert response.status_code == 200
+
+
+# test 2
+@pytest.mark.django_db
+def test_edit_electoral_committee_view_2(client, add_electoral_committee):
+    committee_id = add_electoral_committee.id
+    committee_name = '3 x ok'   # nazwy nie ma w bazie danych
+    response = client.post(f'/society/editcommittee/{committee_id}/',
+                           {'committee_name': committee_name})
+    assert response.status_code == 302
+    assert ElectoralCommittee.objects.get(id=committee_id).committee_name == committee_name
+
+
+# ad G DeleteElectoralCommitteeView
+# test 1
+@pytest.mark.django_db
+def test_delete_electoral_committee_view_1(client, add_electoral_committee):
+    committee_id = add_electoral_committee.id
+    response = client.get(f'/society/deletecommittee/{committee_id}/')
+    assert response.status_code == 302
+
+
+# test 2
+@pytest.mark.django_db
+def test_delete_electoral_committee_view_2(client, add_electoral_committee):
+    committee_id = add_electoral_committee.id
+    client.get(f'/society/deletecommittee/{committee_id}/')
+    assert not ElectoralCommittee.objects.filter(id=committee_id)
+
+
+# ad H MethodsAdvantagesAndDisadvantagesView
+# test 1, test 2 - widok przetestowany w częci C

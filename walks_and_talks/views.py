@@ -99,6 +99,7 @@ class DHondtMethodView(View):
 class AddElectoralCommitteeView(View):
     """The view let add new electoral committees. Users can input a committee name
     and specify whether it's a coalition"""
+
     def get(self, request):
         return render(request, 'add_electoral_committee.html')
 

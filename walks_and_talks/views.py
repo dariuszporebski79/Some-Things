@@ -7,26 +7,37 @@ from walks_and_talks.models import (ElectoralCommittee, AllocatingMethodsAdvanta
 
 
 class WelcomeSiteView(View):
+    """The view creates the welcome site of the app"""
     def get(self, request):
         return render(request, 'welcome_site.html')
 
 
 class WalksAndTalksCategoriesView(View):
+    """The view lists all the 'walks and talks' categories (all the app
+    topics categories)"""
     def get(self, request):
         return render(request, 'walks_and_talks_categories.html')
 
 
 class SocietyWalksAndTalksView(View):
+    """The view lists society-related 'walks and talks' (society-related topics)"""
     def get(self, request):
         return render(request, 'society_walks_and_talks.html')
 
 
 class OpinionsAboutDemocracyView(View):
+    """The class renders a view focused on opinions about democracy (positive
+    and negative too). Users can read some opinions and information about their
+    authors to know more about democracy"""
     def get(self, request):
         return render(request, 'opinions_about_democracy.html')
 
 
 class DHondtMethodView(View):
+    """It is a view talking about the "d'Hondt method". The main function of the view
+    is possibility to perform calculations related to this electoral method. The view
+    also presents information about the method, its advantages, disadvantages
+    and creators"""
     def get(self, request):
         electoral_committees = ElectoralCommittee.objects.all()
         method = AllocatingMandatesMethods.objects.get(name="metoda d'Hondta")
@@ -86,6 +97,8 @@ class DHondtMethodView(View):
 
 
 class AddElectoralCommitteeView(View):
+    """The view let add new electoral committees. Users can input a committee name
+    and specify whether it's a coalition"""
     def get(self, request):
         return render(request, 'add_electoral_committee.html')
 
@@ -108,6 +121,8 @@ class AddElectoralCommitteeView(View):
 
 
 class EditElectoralCommitteeView(View):
+    """The view allows users to edit existing electoral committees. User can modify
+    the committee name and the coalition status"""
     def get(self, request, committee_id):
         edited_committee = ElectoralCommittee.objects.get(id=committee_id)
         message = ":-)"
@@ -139,6 +154,7 @@ class EditElectoralCommitteeView(View):
 
 
 class DeleteElectoralCommitteeView(View):
+    """The view allows users to delete electoral committees"""
     def get(self, request, committee_id):
         deleted_committee = ElectoralCommittee.objects.get(id=committee_id)
         deleted_committee.delete()
@@ -146,6 +162,9 @@ class DeleteElectoralCommitteeView(View):
 
 
 class MethodsAdvantagesAndDisadvantagesView(LoginRequiredMixin, PermissionRequiredMixin, View):
+    """The view allows users to add advantages and disadvantages for different methods
+    of allocating of mandates in proportional elections. Being logged in is required.
+    Some special permissions are required"""
     permission_required = ('walks_and_talks.view_allocatingmandatesmethods',
                            'walks_and_talks.add_allocatingmethodsadvantages',
                            'walks_and_talks.change_allocatingmethodsadvantages',
